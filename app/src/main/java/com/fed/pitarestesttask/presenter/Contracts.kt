@@ -14,6 +14,8 @@ interface FragmentListInterface {
 interface PresenterInterface {
     fun onFragmentLoaded()
     fun onTryAgainButtonClicked()
+    fun onSearchButtonClicked()
     fun attachView(fragment: FragmentListInterface)
     fun detachView()
+    fun setStringForSearch(string: String?)
 }

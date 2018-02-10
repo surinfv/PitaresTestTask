@@ -38,7 +38,9 @@ class RecyclerAdapter(private var context: Context, private var articles: List<R
                     .into(itemView.preview_imageView)
 
             itemView.title_text_view.text = article.byline
-            itemView.date_text_view.text = article.dateUpdated
+            //fixme: placeholder for date
+            itemView.date_text_view.text = context.getString(R.string.placeholder_for_date)
+//            itemView.date_text_view.text = article.dateUpdated
             itemView.description_text_view.text = article.headline
             itemView.read_more_text_view.setOnClickListener {
                 val intent = Intent(Intent.ACTION_VIEW)

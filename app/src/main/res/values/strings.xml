@@ -1,4 +1,9 @@
 <resources>
     <string name="app_name">PitaresTestTask</string>
     <string name="textSample">Sample of text</string>
+    <string name="search_hint">enter text for search…</string>
+    <string name="placeholder_for_date">2018–02–10</string>
+    <string name="place_holder_for_title">Sample - Pulp Fiction</string>
+    <string name="placeholder_for_description">The lives of two mob hitmen, a boxer, a gangster\'s wife, and a pair of diner bandits intertwine in four tales of violence and redemption.</string>
+    <string name="read_more_button_text">READ MORE</string>
 </resources>

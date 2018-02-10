@@ -5,9 +5,8 @@ import android.content.Context
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
 import android.support.v7.widget.LinearLayoutManager
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
+import android.widget.SearchView
 import com.fed.pitarestesttask.R
 import com.fed.pitarestesttask.model.POJO.Result
 import com.fed.pitarestesttask.presenter.FragmentListInterface
@@ -15,12 +14,11 @@ import com.fed.pitarestesttask.presenter.Presenter
 import com.fed.pitarestesttask.presenter.PresenterInterface
 import kotlinx.android.synthetic.main.fragment_elements_list.*
 
+
 /**
  * created by Fedor SURIN on 10.02.2018.
  */
 class FragmentList : Fragment(), FragmentListInterface {
-    private val TAG = "FragmentList"
-
     private lateinit var presenter: PresenterInterface
     private var adapter: RecyclerAdapter? = null
 
@@ -30,13 +28,55 @@ class FragmentList : Fragment(), FragmentListInterface {
         presenter.attachView(this)
     }
 
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? =
-            inflater?.inflate(R.layout.fragment_elements_list, container, false)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
+    }
+
+    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return inflater?.inflate(R.layout.fragment_elements_list, container, false)
+    }
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         recycler_id.layoutManager = LinearLayoutManager(context)
         presenter.onFragmentLoaded()
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater?.inflate(R.menu.main_menu, menu)
+
+        val searchItem = menu?.findItem(R.id.search_item)
+        val searchView = searchItem?.actionView as SearchView
+        searchView.queryHint = getString(R.string.search_hint)
+
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+
+            override fun onQueryTextChange(newText: String): Boolean {
+                presenter.setStringForSearch(newText)
+                return false
+            }
+
+            override fun onQueryTextSubmit(query: String): Boolean {
+                presenter.onSearchButtonClicked()
+                return false
+            }
+        })
+        searchView.setOnCloseListener {
+            presenter.onSearchButtonClicked()
+            false
+        }
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        return when (item?.itemId) {
+            R.id.search_item -> {
+//                presenter.turnOnService()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
     }
 
     override fun onDetach() {
@@ -45,13 +85,8 @@ class FragmentList : Fragment(), FragmentListInterface {
     }
 
     override fun updateAdapter(articles: List<Result>) {
-//        if (adapter == null) {
         adapter = RecyclerAdapter(context, articles)
         recycler_id.adapter = adapter
-//        } else {
-//            adapter.setArticles(articles)
-//            adapter.notifyDataSetChanged()
-//        }
     }
 
     override fun showEmptyListDialog() {
