@@ -33,19 +33,17 @@ class RecyclerAdapter(private var context: Context, private var articles: List<R
     inner class RecyclerHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         fun bind(article: Result) {
             Picasso.with(context)
-                    .load(article.multimedia?.src)
+                    .load(article.multimedia.src)
                     .placeholder(context.getDrawable(R.drawable.android_pirate))
                     .into(itemView.preview_imageView)
 
-            itemView.title_text_view.text = article.byline
-            //fixme: placeholder for date
-            itemView.date_text_view.text = context.getString(R.string.placeholder_for_date)
-//            itemView.date_text_view.text = article.dateUpdated
-            itemView.description_text_view.text = article.headline
+            itemView.title_text_view.text = article.displayTitle
+            itemView.date_text_view.text = article.publicationDate
+            itemView.description_text_view.text = article.summaryShort
             itemView.read_more_text_view.setOnClickListener {
                 val intent = Intent(Intent.ACTION_VIEW)
-                intent.data = Uri.parse(article.link?.url)
-                Log.i("URL", article.link?.url)
+                intent.data = Uri.parse(article.link.url)
+                Log.i("URL", article.link.url)
                 context.startActivity(intent)
             }
         }

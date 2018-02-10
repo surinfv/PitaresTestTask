@@ -49,9 +49,6 @@ class Presenter : PresenterInterface {
         val call: Call<Response> = api.requestForArticles(searchString)
         call.enqueue(object : Callback<Response> {
             override fun onResponse(call: Call<Response>?, response: retrofit2.Response<Response>?) {
-
-                //fixme: ?? empty some (just some!*) fields in response (but OK in browser)
-
                 val articles = response?.body()?.results
                 if (articles != null) {
                     fragment?.updateAdapter(articles)
