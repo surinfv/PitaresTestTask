@@ -24,6 +24,14 @@ class Presenter : PresenterInterface {
         call.enqueue(object : Callback<Response> {
             override fun onResponse(call: Call<Response>?, response: retrofit2.Response<Response>?) {
 
+                //fixme: ?? empty some fields in response (but OK in browser)
+
+                val articles = response?.body()?.results
+                if (articles != null) {
+                    fragment?.updateAdapter(articles)
+                } else {
+                    fragment?.showEmptyListDialog()
+                }
                 Log.i(TAG, "OK")
             }
 
