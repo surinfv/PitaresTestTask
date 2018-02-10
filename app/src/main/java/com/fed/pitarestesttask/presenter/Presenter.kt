@@ -10,6 +10,7 @@ import retrofit2.Callback
  * created by Fedor SURIN on 10.02.2018.
  */
 class Presenter : PresenterInterface {
+
     private val TAG = "Presenter"
 
     private var fragment: FragmentListInterface? = null
@@ -29,6 +30,7 @@ class Presenter : PresenterInterface {
                 val articles = response?.body()?.results
                 if (articles != null) {
                     fragment?.updateAdapter(articles)
+                    fragment?.hideProgressBar()
                 } else {
                     fragment?.showEmptyListDialog()
                 }
@@ -39,6 +41,10 @@ class Presenter : PresenterInterface {
                 Log.i(TAG, "retrofit onFailure: " + t.toString())
             }
         })
+    }
+
+    override fun onTryAgainButtonClicked() {
+        doRequest()
     }
 
     override fun attachView(fragment: FragmentListInterface) {

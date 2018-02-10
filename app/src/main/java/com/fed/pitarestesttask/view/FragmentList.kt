@@ -3,6 +3,7 @@ package com.fed.pitarestesttask.view
 import android.app.Fragment
 import android.content.Context
 import android.os.Bundle
+import android.support.v7.app.AlertDialog
 import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
@@ -35,8 +36,6 @@ class FragmentList : Fragment(), FragmentListInterface {
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         recycler_id.layoutManager = LinearLayoutManager(context)
-//        adapter = RecyclerAdapter(context, getElements())
-//        recycler_id.adapter = adapter
         presenter.onFragmentLoaded()
     }
 
@@ -44,14 +43,6 @@ class FragmentList : Fragment(), FragmentListInterface {
         super.onDetach()
         presenter.detachView()
     }
-
-
-    //    //fixme - placeholder
-//    private fun getElements(): ArrayList<Element> {
-//        val list = ArrayList<Element>()
-//        for (n in 1..200) list.add(Element("element $n"))
-//        return list
-//    }
 
     override fun updateAdapter(articles: List<Result>) {
 //        if (adapter == null) {
@@ -64,8 +55,18 @@ class FragmentList : Fragment(), FragmentListInterface {
     }
 
     override fun showEmptyListDialog() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        val alertDialog = AlertDialog.Builder(activity).create()
+        alertDialog.apply {
+            setTitle("wrong answer from server")
+            setMessage("had empty list")
+            setButton(AlertDialog.BUTTON_POSITIVE, "try again", { _, _ ->
+                presenter.onTryAgainButtonClicked()
+            })
+        }.show()
     }
 
-
+    override fun hideProgressBar() {
+        recycler_id.visibility = View.VISIBLE
+        progressBar.visibility = View.GONE
+    }
 }

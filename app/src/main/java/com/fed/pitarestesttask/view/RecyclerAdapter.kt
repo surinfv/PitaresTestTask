@@ -34,7 +34,7 @@ class RecyclerAdapter(private var context: Context, private var articles: List<R
         fun bind(article: Result) {
             Picasso.with(context)
                     .load(article.multimedia?.src)
-//                    .placeholder(getResources().getDrawable(R.drawable.sun_placeholder))
+                    .placeholder(context.getDrawable(R.drawable.android_pirate))
                     .into(itemView.preview_imageView)
 
             itemView.title_text_view.text = article.byline

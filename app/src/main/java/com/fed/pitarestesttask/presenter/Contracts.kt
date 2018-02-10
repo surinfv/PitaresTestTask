@@ -8,10 +8,12 @@ import com.fed.pitarestesttask.model.POJO.Result
 interface FragmentListInterface {
     fun updateAdapter(articles: List<Result>)
     fun showEmptyListDialog()
+    fun hideProgressBar()
 }
 
 interface PresenterInterface {
     fun onFragmentLoaded()
+    fun onTryAgainButtonClicked()
     fun attachView(fragment: FragmentListInterface)
     fun detachView()
 }
