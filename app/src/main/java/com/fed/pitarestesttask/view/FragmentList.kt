@@ -41,6 +41,7 @@ class FragmentList : Fragment(), FragmentListInterface {
         super.onViewCreated(view, savedInstanceState)
         recycler_id.layoutManager = LinearLayoutManager(context)
         presenter.onFragmentLoaded()
+        swipe_container.setOnRefreshListener { presenter.onSwipeRefresh() }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
@@ -72,7 +73,6 @@ class FragmentList : Fragment(), FragmentListInterface {
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         return when (item?.itemId) {
             R.id.search_item -> {
-//                presenter.turnOnService()
                 true
             }
             else -> super.onOptionsItemSelected(item)
@@ -100,8 +100,12 @@ class FragmentList : Fragment(), FragmentListInterface {
         }.show()
     }
 
+    override fun showProgressBar() {
+        swipe_container.isRefreshing = true
+    }
+
     override fun hideProgressBar() {
         recycler_id.visibility = View.VISIBLE
-        progressBar.visibility = View.GONE
+        swipe_container.isRefreshing = false
     }
 }

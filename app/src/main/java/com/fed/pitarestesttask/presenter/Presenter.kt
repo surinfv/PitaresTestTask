@@ -27,6 +27,10 @@ class Presenter : PresenterInterface {
         doRequest()
     }
 
+    override fun onSwipeRefresh() {
+        doRequest()
+    }
+
     override fun setStringForSearch(string: String?) {
         if (string != null && string.isNotEmpty()) {
             this.searchString = string
@@ -45,6 +49,7 @@ class Presenter : PresenterInterface {
     }
 
     private fun doRequest() {
+        fragment?.showProgressBar()
         val api = RetroClient.apiService
         val call: Call<Response> = api.requestForArticles(searchString)
         call.enqueue(object : Callback<Response> {
