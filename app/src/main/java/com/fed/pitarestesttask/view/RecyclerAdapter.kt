@@ -46,6 +46,7 @@ class RecyclerAdapter(private var context: Context, private var articles: List<R
                 Log.i("URL", article.link.url)
                 context.startActivity(intent)
             }
+            if (article.criticsPick == 1) itemView.critic_pick_star.visibility = View.VISIBLE
         }
     }
 }
