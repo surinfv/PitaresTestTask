@@ -8,5 +8,5 @@ import retrofit2.http.Query
 
 interface ApiService {
     @GET("search.json?api-key=8e32ce39c88647eb9fa04fe3c9a3617c")
-    fun requestForArticles(@Query("query") query: String?): Call<ApiResponse>
+    fun requestForArticles(@Query("query") query: String?, @Query("offset") offset: Int): Call<ApiResponse>
 }

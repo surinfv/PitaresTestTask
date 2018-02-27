@@ -13,10 +13,12 @@ import com.fed.pitarestesttask.model.ResultsItem
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.list_item.view.*
 
-/**
- * created by Fedor SURIN on 10.02.2018.
- */
+
 class RecyclerAdapter(private var context: Context, private var articles: List<ResultsItem>) : RecyclerView.Adapter<RecyclerAdapter.RecyclerHolder>() {
+
+    fun setArticles(newArticles: List<ResultsItem>) {
+        articles = newArticles
+    }
 
     override fun getItemCount(): Int = articles.size
 
@@ -28,7 +30,6 @@ class RecyclerAdapter(private var context: Context, private var articles: List<R
         val v = LayoutInflater.from(context).inflate(R.layout.list_item, parent, false)
         return RecyclerHolder(v)
     }
-
 
     inner class RecyclerHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         fun bind(article: ResultsItem) {

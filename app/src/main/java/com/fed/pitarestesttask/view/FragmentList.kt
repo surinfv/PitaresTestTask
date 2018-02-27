@@ -5,6 +5,8 @@ import android.content.Context
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
 import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
+import android.util.Log
 import android.view.*
 import android.widget.SearchView
 import com.fed.pitarestesttask.R
@@ -16,8 +18,10 @@ import kotlinx.android.synthetic.main.fragment_elements_list.*
 
 
 class FragmentList : Fragment(), FragmentListInterface {
+    private val TAG = "FragmentList"
     private lateinit var presenter: PresenterInterface
     private var adapter: RecyclerAdapter? = null
+    private var isLoading = false
 
     override fun onAttach(context: Context?) {
         super.onAttach(context)
@@ -36,7 +40,7 @@ class FragmentList : Fragment(), FragmentListInterface {
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        recycler_id.layoutManager = LinearLayoutManager(context)
+        recycler_view.layoutManager = LinearLayoutManager(context)
         presenter.onFragmentLoaded()
         swipe_container.setOnRefreshListener { presenter.onSwipeRefresh() }
     }
@@ -82,17 +86,23 @@ class FragmentList : Fragment(), FragmentListInterface {
     }
 
     override fun updateAdapter(articles: List<ResultsItem>) {
-        adapter = RecyclerAdapter(context, articles)
-        recycler_id.adapter = adapter
+        if (adapter == null) {
+            adapter = RecyclerAdapter(context, articles)
+            recycler_view.adapter = adapter
+        } else {
+            adapter?.setArticles(articles)
+        }
+        adapter?.notifyDataSetChanged()
+        setRecyclerViewScrollListener()
     }
 
-    override fun showEmptyListDialog() {
+    override fun showWrongResponseDialog() {
         val alertDialog = AlertDialog.Builder(activity).create()
         alertDialog.apply {
-            setTitle("wrong answer from server")
-            setMessage("had empty list")
-            setButton(AlertDialog.BUTTON_POSITIVE, "try again", { _, _ ->
-                presenter.onTryAgainButtonClicked()
+            setTitle("Error")
+            setMessage("wrong response from server. application will try reload articles.")
+            setButton(AlertDialog.BUTTON_POSITIVE, "got it", { _, _ ->
+                presenter.onWrongResponseDialogButtonClicked()
             })
         }.show()
     }
@@ -102,7 +112,27 @@ class FragmentList : Fragment(), FragmentListInterface {
     }
 
     override fun hideProgressBar() {
-        recycler_id.visibility = View.VISIBLE
+        recycler_view.visibility = View.VISIBLE
         swipe_container.isRefreshing = false
+    }
+
+    override fun setLoadingFlag(isLoading: Boolean) {
+        this.isLoading = isLoading
+    }
+
+    private fun setRecyclerViewScrollListener() {
+        recycler_view.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView?, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+                val lastVisibleItemPosition = (recyclerView?.layoutManager as LinearLayoutManager).findLastVisibleItemPosition() + 1
+                val totalItemCount = recyclerView.layoutManager.itemCount
+                Log.i(TAG, "totalItemCount -> $totalItemCount ; lastVisibleItemPosition -> $lastVisibleItemPosition")
+                if (!isLoading
+                        && lastVisibleItemPosition > totalItemCount - 3) {
+                    Log.i(TAG, "lastItemShown()")
+                    presenter.lastItemShown()
+                }
+            }
+        })
     }
 }
