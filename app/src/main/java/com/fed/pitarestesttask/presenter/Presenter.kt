@@ -1,6 +1,5 @@
 package com.fed.pitarestesttask.presenter
 
-import android.content.ContentValues.TAG
 import android.util.Log
 import com.fed.pitarestesttask.model.ApiResponse
 import com.fed.pitarestesttask.model.ResultsItem
@@ -10,8 +9,9 @@ import retrofit2.Callback
 
 
 class Presenter : PresenterInterface {
-
-    private var searchString: String? = null
+    private val TAG = Presenter::class.java.simpleName
+    private var isLoading = false
+    private var searchString = ""
     private var page = 0
     private var fragment: FragmentListInterface? = null
     private var allArticles: MutableList<ResultsItem> = ArrayList()
@@ -24,13 +24,18 @@ class Presenter : PresenterInterface {
         doRequest()
     }
 
+    override fun onEmptyListDialogButtonClicked() {
+        searchString = ""
+        doRequest()
+    }
+
     override fun onSearchButtonClicked() {
+        page = 0
         doRequest()
     }
 
     override fun onSwipeRefresh() {
         page = 0
-        allArticles.clear()
         doRequest()
     }
 
@@ -43,7 +48,7 @@ class Presenter : PresenterInterface {
         if (string != null && string.isNotEmpty()) {
             this.searchString = string
         } else {
-            this.searchString = null
+            this.searchString = ""
         }
 
     }
@@ -57,39 +62,42 @@ class Presenter : PresenterInterface {
     }
 
     private fun doRequest() {
-        onLoadingStart(true)
-        val api = RetroClient.apiService
-        val call: Call<ApiResponse> = api.requestForArticles(searchString, page * 20)
-        call.enqueue(object : Callback<ApiResponse> {
-            override fun onResponse(call: Call<ApiResponse>?, response: retrofit2.Response<ApiResponse>?) {
-                val newArticles = response?.body()?.results
-                if (newArticles != null) {
-                    allArticles.addAll(newArticles)
-                    fragment?.updateAdapter(allArticles)
+        if (!isLoading) {
+            onLoading(true)
+            Log.i(TAG, "page -> $page ; query -> $searchString")
+            val api = RetroClient.apiService
+            val call: Call<ApiResponse> = api.requestForArticles(searchString, page * 20)
+            call.enqueue(object : Callback<ApiResponse> {
+                override fun onResponse(call: Call<ApiResponse>?, response: retrofit2.Response<ApiResponse>?) {
+                    val newArticles = response?.body()?.results
+                    if (newArticles != null && newArticles.isNotEmpty()) {
+                        if (page == 0) allArticles.clear()
+                        allArticles.addAll(newArticles)
+                        fragment?.updateAdapter(allArticles)
 
-                } else {
+                    } else {
+                        fragment?.showEmptyListDialog()
+                    }
+                    onLoading(false)
+                    Log.i(TAG, "OK")
+                }
+
+                override fun onFailure(call: Call<ApiResponse>?, t: Throwable?) {
+                    Log.i(TAG, "retrofit onFailure: " + t.toString())
+                    onLoading(false)
                     fragment?.showWrongResponseDialog()
                 }
-                fragment?.hideProgressBar()
-                fragment?.setLoadingFlag(false)
-                Log.i(TAG, "OK")
-            }
-
-            override fun onFailure(call: Call<ApiResponse>?, t: Throwable?) {
-                Log.i(TAG, "retrofit onFailure: " + t.toString())
-                onLoadingStart(false)
-                fragment?.showWrongResponseDialog()
-            }
-        })
+            })
+        }
     }
 
-    private fun onLoadingStart(isItStartLoading: Boolean) {
+    private fun onLoading(isItStartLoading: Boolean) {
         if (isItStartLoading) {
             fragment?.showProgressBar()
-            fragment?.setLoadingFlag(true)
+            isLoading = true
         } else {
             fragment?.hideProgressBar()
-            fragment?.setLoadingFlag(false)
+            isLoading = false
         }
     }
 }

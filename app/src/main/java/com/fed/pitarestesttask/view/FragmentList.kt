@@ -21,7 +21,6 @@ class FragmentList : Fragment(), FragmentListInterface {
     private val TAG = "FragmentList"
     private lateinit var presenter: PresenterInterface
     private var adapter: RecyclerAdapter? = null
-    private var isLoading = false
 
     override fun onAttach(context: Context?) {
         super.onAttach(context)
@@ -107,6 +106,17 @@ class FragmentList : Fragment(), FragmentListInterface {
         }.show()
     }
 
+    override fun showEmptyListDialog() {
+        val alertDialog = AlertDialog.Builder(activity).create()
+        alertDialog.apply {
+            setTitle("There is no articles")
+            setMessage("try to change search string")
+            setButton(AlertDialog.BUTTON_POSITIVE, "got it", { _, _ ->
+                presenter.onEmptyListDialogButtonClicked()
+            })
+        }.show()
+    }
+
     override fun showProgressBar() {
         swipe_container.isRefreshing = true
     }
@@ -116,10 +126,6 @@ class FragmentList : Fragment(), FragmentListInterface {
         swipe_container.isRefreshing = false
     }
 
-    override fun setLoadingFlag(isLoading: Boolean) {
-        this.isLoading = isLoading
-    }
-
     private fun setRecyclerViewScrollListener() {
         recycler_view.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView?, newState: Int) {
@@ -127,8 +133,7 @@ class FragmentList : Fragment(), FragmentListInterface {
                 val lastVisibleItemPosition = (recyclerView?.layoutManager as LinearLayoutManager).findLastVisibleItemPosition() + 1
                 val totalItemCount = recyclerView.layoutManager.itemCount
                 Log.i(TAG, "totalItemCount -> $totalItemCount ; lastVisibleItemPosition -> $lastVisibleItemPosition")
-                if (!isLoading
-                        && lastVisibleItemPosition > totalItemCount - 3) {
+                if (lastVisibleItemPosition > totalItemCount - 5) {
                     Log.i(TAG, "lastItemShown()")
                     presenter.lastItemShown()
                 }

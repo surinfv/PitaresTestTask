@@ -14,7 +14,7 @@ data class Multimedia(@SerializedName("src")
 
 
 data class ResultsItem(@SerializedName("multimedia")
-                       val multimedia: Multimedia,
+                       val multimedia: Multimedia?,
                        @SerializedName("date_updated")
                        val dateUpdated: String = "",
                        @SerializedName("display_title")

@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.fed.pitarestesttask.R
 import com.fed.pitarestesttask.model.ResultsItem
+import com.squareup.picasso.MemoryPolicy
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.list_item.view.*
 
@@ -33,10 +34,16 @@ class RecyclerAdapter(private var context: Context, private var articles: List<R
 
     inner class RecyclerHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         fun bind(article: ResultsItem) {
-            Picasso.with(context)
-                    .load(article.multimedia.src)
-                    .placeholder(context.getDrawable(R.drawable.android_pirate))
-                    .into(itemView.preview_imageView)
+            if (article.multimedia != null) {
+                Picasso.with(context)
+                        .load(article.multimedia.src)
+                        .placeholder(context.getDrawable(R.drawable.android_pirate))
+                        .memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE)
+                        .into(itemView.preview_imageView)
+                itemView.preview_imageView.visibility = View.VISIBLE
+            } else {
+                itemView.preview_imageView.visibility = View.GONE
+            }
 
             itemView.title_text_view.text = article.displayTitle
             itemView.date_text_view.text = article.publicationDate
