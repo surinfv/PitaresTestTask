@@ -9,14 +9,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.fed.pitarestesttask.R
-import com.fed.pitarestesttask.model.POJO.Result
+import com.fed.pitarestesttask.model.ResultsItem
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.list_item.view.*
 
 /**
  * created by Fedor SURIN on 10.02.2018.
  */
-class RecyclerAdapter(private var context: Context, private var articles: List<Result>) : RecyclerView.Adapter<RecyclerAdapter.RecyclerHolder>() {
+class RecyclerAdapter(private var context: Context, private var articles: List<ResultsItem>) : RecyclerView.Adapter<RecyclerAdapter.RecyclerHolder>() {
 
     override fun getItemCount(): Int = articles.size
 
@@ -31,7 +31,7 @@ class RecyclerAdapter(private var context: Context, private var articles: List<R
 
 
     inner class RecyclerHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        fun bind(article: Result) {
+        fun bind(article: ResultsItem) {
             Picasso.with(context)
                     .load(article.multimedia.src)
                     .placeholder(context.getDrawable(R.drawable.android_pirate))

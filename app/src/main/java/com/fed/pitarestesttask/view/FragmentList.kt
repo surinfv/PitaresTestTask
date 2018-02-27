@@ -8,16 +8,13 @@ import android.support.v7.widget.LinearLayoutManager
 import android.view.*
 import android.widget.SearchView
 import com.fed.pitarestesttask.R
-import com.fed.pitarestesttask.model.POJO.Result
+import com.fed.pitarestesttask.model.ResultsItem
 import com.fed.pitarestesttask.presenter.FragmentListInterface
 import com.fed.pitarestesttask.presenter.Presenter
 import com.fed.pitarestesttask.presenter.PresenterInterface
 import kotlinx.android.synthetic.main.fragment_elements_list.*
 
 
-/**
- * created by Fedor SURIN on 10.02.2018.
- */
 class FragmentList : Fragment(), FragmentListInterface {
     private lateinit var presenter: PresenterInterface
     private var adapter: RecyclerAdapter? = null
@@ -84,7 +81,7 @@ class FragmentList : Fragment(), FragmentListInterface {
         presenter.detachView()
     }
 
-    override fun updateAdapter(articles: List<Result>) {
+    override fun updateAdapter(articles: List<ResultsItem>) {
         adapter = RecyclerAdapter(context, articles)
         recycler_id.adapter = adapter
     }
