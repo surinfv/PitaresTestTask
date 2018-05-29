@@ -2,6 +2,8 @@ package com.fed.pitarestesttask.view
 
 import android.app.Fragment
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
 import android.support.v7.widget.LinearLayoutManager
@@ -86,7 +88,7 @@ class FragmentList : Fragment(), FragmentListInterface {
 
     override fun updateAdapter(articles: List<ResultsItem>) {
         if (adapter == null) {
-            adapter = RecyclerAdapter(context, articles)
+            adapter = RecyclerAdapter(context, articles, { s -> openMoreInfo(s) })
             recycler_view.adapter = adapter
         } else {
             adapter?.setArticles(articles)
@@ -139,5 +141,12 @@ class FragmentList : Fragment(), FragmentListInterface {
                 }
             }
         })
+    }
+
+    private fun openMoreInfo(url: String) {
+        val intent = Intent(Intent.ACTION_VIEW)
+        intent.data = Uri.parse(url)
+        Log.i("URL", url)
+        context.startActivity(intent)
     }
 }

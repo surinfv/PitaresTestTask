@@ -1,10 +1,7 @@
 package com.fed.pitarestesttask.view
 
 import android.content.Context
-import android.content.Intent
-import android.net.Uri
 import android.support.v7.widget.RecyclerView
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,7 +12,9 @@ import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.list_item.view.*
 
 
-class RecyclerAdapter(private var context: Context, private var articles: List<ResultsItem>) : RecyclerView.Adapter<RecyclerAdapter.RecyclerHolder>() {
+class RecyclerAdapter(private var context: Context,
+                      private var articles: List<ResultsItem>,
+                      private val onReadMoreClickListener: (String) -> Unit) : RecyclerView.Adapter<RecyclerAdapter.RecyclerHolder>() {
 
     fun setArticles(newArticles: List<ResultsItem>) {
         articles = newArticles
@@ -48,12 +47,7 @@ class RecyclerAdapter(private var context: Context, private var articles: List<R
             itemView.title_text_view.text = article.displayTitle
             itemView.date_text_view.text = article.publicationDate
             itemView.description_text_view.text = article.summaryShort
-            itemView.read_more_text_view.setOnClickListener {
-                val intent = Intent(Intent.ACTION_VIEW)
-                intent.data = Uri.parse(article.link.url)
-                Log.i("URL", article.link.url)
-                context.startActivity(intent)
-            }
+            itemView.read_more_text_view.setOnClickListener { onReadMoreClickListener.invoke(article.link.url) }
             if (article.criticsPick == 1) itemView.critic_pick_star.visibility = View.VISIBLE
         }
     }
