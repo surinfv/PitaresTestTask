@@ -102,9 +102,9 @@ class FragmentList : Fragment(), FragmentListInterface {
         alertDialog.apply {
             setTitle("Error")
             setMessage("wrong response from server. application will try reload articles.")
-            setButton(AlertDialog.BUTTON_POSITIVE, "got it", { _, _ ->
+            setButton(AlertDialog.BUTTON_POSITIVE, "got it") { _, _ ->
                 presenter.onWrongResponseDialogButtonClicked()
-            })
+            }
         }.show()
     }
 
@@ -113,9 +113,9 @@ class FragmentList : Fragment(), FragmentListInterface {
         alertDialog.apply {
             setTitle("There is no articles")
             setMessage("try to change search string")
-            setButton(AlertDialog.BUTTON_POSITIVE, "got it", { _, _ ->
+            setButton(AlertDialog.BUTTON_POSITIVE, "got it") { _, _ ->
                 presenter.onEmptyListDialogButtonClicked()
-            })
+            }
         }.show()
     }
 
